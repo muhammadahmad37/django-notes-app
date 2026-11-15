@@ -1,4 +1,5 @@
 
+pipeline {
     agent any
 
     stages {
@@ -29,12 +30,10 @@
                 sh 'django/bin/python manage.py migrate'
 
                 sh '''
-                    pkill -f "gunicorn.*notesapp.wsgi" || true
-
                     nohup django/bin/gunicorn notesapp.wsgi:application \
                     --bind 0.0.0.0:8000 \
                     --workers 2 \
-                    > django.log 2>&1 &
+                    > django.log 2>&1 < /dev/null &
                 '''
             }
         }
